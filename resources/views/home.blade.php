@@ -17,6 +17,13 @@
                     {{ __('You are logged in!') }}
                 </div>
             </div>
+            <div class="col-12">
+                <button class="btn btn-primary" type="submit">Entry  form</button>
+            </div>
+
+            <a class="navbar-brand" href="{{ url('/entry/create') }}">a button
+                {{-- {{ config('app.name', 'Laravel') }} --}}
+            </a>
         </div>
     </div>
 </div>
