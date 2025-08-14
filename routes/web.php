@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\EntrysController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,4 +21,4 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/entry/create', [App\Http\Controllers\EntrysController::class, 'index'])->name('home');
+ Route::resource('entrys', EntrysController::class);
