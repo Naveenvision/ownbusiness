@@ -14,8 +14,9 @@ class EntrysController extends Controller
      */
     public function index()
     {
-        //
-        return view('entry/create');
+        $entrys = Entry::all(); 
+        return view('entry.show', compact('entrys')); // Passes the data to the 'users.index' view
+        // return view('entrys.show')->with('data', $entrys);
     }
 
     /**
@@ -26,7 +27,7 @@ class EntrysController extends Controller
     public function create()
     {
         //
-    }
+        return view('entry/create');    }
 
     /**
      * Store a newly created resource in storage.
@@ -36,7 +37,22 @@ class EntrysController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $post = new Entry();
+        $post->date = $request->date;
+        $post->name = $request->name;
+        $post->rate = $request->rate;
+        $post->boal = $request->boal;
+        $post->coal = $request->coal;
+        $post->amount = $request->amount;
+        $post->status = $request->status;
+        $post->rec_amount = 123;               
+        $post->balance =  123;                  
+        $post->save(); 
+        
+        return redirect('/home')->with('success', 'entrys created successfully!');
+
+        // return redirect()->route('entrys.index')->with('success', 'entrys created successfully!');
     }
 
     /**
