@@ -15,8 +15,8 @@ class EntrysController extends Controller
     public function index()
     {
         $entrys = Entry::all(); 
+
         return view('entry.show', compact('entrys')); // Passes the data to the 'users.index' view
-        // return view('entrys.show')->with('data', $entrys);
     }
 
     /**
@@ -37,20 +37,45 @@ class EntrysController extends Controller
      */
     public function store(Request $request)
     {
+        $lastInsertedRecord = Entry::latest()->first();
+        $lastInsertedId = $lastInsertedRecord->id;
+        $last_rec_Balance = Entry::where('id', $lastInsertedId)->value('balance');
 
-        $post = new Entry();
-        $post->date = $request->date;
-        $post->name = $request->name;
-        $post->rate = $request->rate;
-        $post->boal = $request->boal;
-        $post->coal = $request->coal;
-        $post->amount = $request->amount;
-        $post->status = $request->status;
-        $post->rec_amount = 123;               
-        $post->balance =  123;                  
-        $post->save(); 
+        if($request->status == "entry"){
+            $post = new Entry();
+            $post->date = $request->date;
+            $post->name = $request->name;
+            $post->rate = $request->rate;
+            $post->boal = $request->boal;
+            $post->coal = $request->coal;
+            $post->amount = $request->amount;
+            $post->status = $request->status;
+            $post->rec_amount = 0;               
+            $post->balance = $request->amount + $last_rec_Balance;
+            $post->save(); 
+            return redirect('/entrys/create')->with('success', 'entrys created successfully!');
+        }
+        else{
+            $post = new Entry();
+            $post->date = $request->date;
+            $post->name = $request->name;
+            $post->rate = 0;
+            $post->boal = 0;
+            $post->coal = 0;
+            $post->amount = 0;
+            $post->status = $request->status;
+            $post->rec_amount = $request->rec_amount;               
+            $post->balance = $last_rec_Balance - $request->rec_amount;
+            $post->save(); 
+            $entry = Entry::all();
+            // return view('entry.index', compact('entry'));
+            // return redirect('/entrys/create')->with('success', 'entrys created successfully!');
+
+        }
+                        
+        // $post->save(); 
         
-        return redirect('/home')->with('success', 'entrys created successfully!');
+        // return redirect('/entrys/create')->with('success', 'entrys created successfully!');
 
         // return redirect()->route('entrys.index')->with('success', 'entrys created successfully!');
     }
@@ -63,7 +88,8 @@ class EntrysController extends Controller
      */
     public function show(Entry $entry)
     {
-        //
+
+        return view('entry.index', compact('entry'));
     }
 
     /**
@@ -75,6 +101,7 @@ class EntrysController extends Controller
     public function edit(Entry $entry)
     {
         //
+        dd("hi");
     }
 
     /**
@@ -97,6 +124,19 @@ class EntrysController extends Controller
      */
     public function destroy(Entry $entry)
     {
-        //
+        $entry->delete();
+        return view('/home');
+
     }
+
+    public function received(Entry $entry)
+    {
+        return view('entry.receive');
+        // return view('entry.index', compact('entry'));
+
+        //return view('/home');
+        
+    }
+    
 }
+
